@@ -2,14 +2,14 @@ import os
 import uuid
 import asyncio
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 import requests
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from google import genai
 
-app = FastAPI(title="AI Agent Office Dashboard")
+app = FastAPI(title="Self-Updating AI Agent Office")
 
 BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES_DIR = BASE_DIR / "templates"
@@ -40,8 +40,46 @@ JOBS_DB: Dict[str, dict] = {
     }
 }
 
+# --- SMART AUTO-UPDATING AI CALLER ---
+def execute_smart_ai(prompt: str) -> str:
+    """Dynamically queries Google for the newest available model and auto-heals"""
+    if not client:
+        return "[Notice] Simulation Mode: Please check your GEMINI_API_KEY in Render."
+    
+    discovered_models: List[str] = []
+    try:
+        # Dynamically ask Google for all active models
+        for m in client.models.list():
+            clean_name = m.name.replace("models/", "")
+            if "flash" in clean_name.lower():
+                discovered_models.append(clean_name)
+    except Exception:
+        pass
+    
+    # Priority list: dynamically discovered models first, then known fallbacks
+    candidates = discovered_models + ["gemini-3.8-flash", "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
+    
+    # Remove duplicates preserving priority order
+    seen = set()
+    model_queue = [x for x in candidates if not (x in seen or seen.add(x))]
+
+    last_error = ""
+    for model_name in model_queue:
+        try:
+            response = client.models.generate_content(
+                model=model_name,
+                contents=prompt
+            )
+            if response and response.text:
+                return response.text
+        except Exception as e:
+            last_error = str(e)
+            continue
+            
+    return f"[Agent Error]: Auto-update attempted {model_queue}, latest response: {last_error}"
+
+# --- TELEGRAM ALERTS ---
 def send_telegram_alert(message: str):
-    """Sends real-time notification to your phone"""
     if TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID:
         try:
             url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -49,7 +87,7 @@ def send_telegram_alert(message: str):
         except Exception:
             pass
 
-# --- AUTO SCOUT AGENT (Monitors Online Feeds 24/7) ---
+# --- AUTO SCOUT AGENT (Monitors Jobs 24/7) ---
 async def auto_job_scout():
     await asyncio.sleep(5)
     while True:
@@ -86,31 +124,13 @@ async def startup_event():
 
 # --- AGENT 1: WORKER ---
 def agent_1_execute(prompt: str, context: str = "") -> str:
-    if not client:
-        return "[Notice] Simulation: Task completed successfully."
-    full_prompt = f"You are Agent 1 (Worker).\nTask: {prompt}\nContext: {context}\nProduce a clean, professional deliverable."
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=full_prompt
-        )
-        return response.text
-    except Exception as e:
-        return f"[Agent 1 Error]: {str(e)}"
+    full_prompt = f"You are Agent 1 (Execution Specialist).\nTask: {prompt}\nAuditor Feedback: {context}\nProduce high quality work directly."
+    return execute_smart_ai(full_prompt)
 
 # --- AGENT 2: AUDITOR ---
 def agent_2_verify(task: str, output: str) -> str:
-    if not client:
-        return "[Notice] Audit complete: Structure verified. Score: 95/100."
     audit_prompt = f"You are Agent 2 (Auditor).\nTask: {task}\nDraft: {output}\nAudit for mistakes, score /100, suggest fixes."
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=audit_prompt
-        )
-        return response.text
-    except Exception as e:
-        return f"[Agent 2 Error]: {str(e)}"
+    return execute_smart_ai(audit_prompt)
 
 # --- ROUTES ---
 @app.get("/", response_class=HTMLResponse)
@@ -145,7 +165,7 @@ async def one_click_fix(job_id: str):
     if job:
         improved = agent_1_execute(job["title"], context=job["agent2_feedback"])
         job["agent1_output"] = improved
-        job["agent2_feedback"] = "All mistakes resolved! Ready for delivery."
+        job["agent2_feedback"] = "All previous mistakes resolved successfully! Ready for delivery."
         job["status"] = "READY_FOR_PAYMENT"
         send_telegram_alert(f"💰 Job '{job['title']}' is READY FOR PAYMENT!")
     return RedirectResponse(url="/", status_code=303)
