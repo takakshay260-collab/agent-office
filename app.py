@@ -1,13 +1,19 @@
-import os
+
+  import os
 import uuid
-from typing import List, Dict
+from pathlib import Path
+from typing import Dict
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from google import genai
 
 app = FastAPI(title="AI Agent Office Dashboard")
-templates = Jinja2Templates(directory="templates")
+
+# Robust directory path resolution
+BASE_DIR = Path(__file__).resolve().parent
+TEMPLATES_DIR = BASE_DIR / "templates"
+templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 # Configure Gemini Client from environment variable
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
@@ -65,7 +71,12 @@ Your Job:
 # --- ROUTES ---
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "jobs": list(JOBS_DB.values())})
+    # Compatible with newest FastAPI / Starlette signature
+    return templates.TemplateResponse(
+        request=request, 
+        name="index.html", 
+        context={"jobs": list(JOBS_DB.values())}
+    )
 
 @app.post("/jobs/create")
 async def create_job(title: str = Form(...), client_name: str = Form(...), budget: str = Form(...)):
