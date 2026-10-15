@@ -27,7 +27,18 @@ if GEMINI_API_KEY:
     except Exception:
         client = None
 
-JOBS_DB: Dict[str, dict] = {}
+JOBS_DB: Dict[str, dict] = {
+    "sample-101": {
+        "id": "sample-101",
+        "title": "Write 5 LinkedIn Hooks on B2B SaaS Growth",
+        "client": "Client_Alpha",
+        "budget": "₹1,500",
+        "status": "PENDING_APPROVAL",
+        "agent1_output": "",
+        "agent2_feedback": "",
+        "paid": False
+    }
+}
 
 def send_telegram_alert(message: str):
     """Sends real-time notification to your phone"""
@@ -40,22 +51,19 @@ def send_telegram_alert(message: str):
 
 # --- AUTO SCOUT AGENT (Monitors Online Feeds 24/7) ---
 async def auto_job_scout():
-    """Checks public job feeds and alerts your phone when work is found"""
-    await asyncio.sleep(5)  # wait for startup
+    await asyncio.sleep(5)
     while True:
         try:
-            # Fetches public remote writing/editing/automation jobs
             feed_url = "https://remoteok.com/api"
             headers = {"User-Agent": "Mozilla/5.0"}
             res = requests.get(feed_url, headers=headers, timeout=10)
             if res.status_code == 200:
                 jobs = res.json()
-                for item in jobs[1:6]: # check latest 5 listings
+                for item in jobs[1:6]:
                     job_id = str(item.get("id", uuid.uuid4()))
                     if job_id not in JOBS_DB:
                         title = item.get("position", "Freelance Task")
                         company = item.get("company", "Remote Client")
-                        
                         JOBS_DB[job_id] = {
                             "id": job_id,
                             "title": title,
@@ -66,13 +74,10 @@ async def auto_job_scout():
                             "agent2_feedback": "",
                             "paid": False
                         }
-                        # Ping phone
-                        send_telegram_alert(f"🔔 NEW JOB FOUND!\n\nTask: {title}\nClient: {company}\nBudget: ₹1,500\n\nOpen your dashboard to approve!")
-                        break # add one at a time
-        except Exception as e:
+                        send_telegram_alert(f"🔔 NEW JOB FOUND!\n\nTask: {title}\nClient: {company}\nBudget: ₹1,500\n\nOpen dashboard to approve!")
+                        break
+        except Exception:
             pass
-        
-        # Runs every 15 minutes automatically
         await asyncio.sleep(900)
 
 @app.on_event("startup")
@@ -83,13 +88,15 @@ async def startup_event():
 def agent_1_execute(prompt: str, context: str = "") -> str:
     if not client:
         return "[Notice] Simulation: Task completed successfully."
-    full_prompt = f"You are Agent 1 (Worker).\nTask: {prompt}\nContext: {context}\nProduce high quality deliverable."
+    full_prompt = f"You are Agent 1 (Worker).\nTask: {prompt}\nContext: {context}\nProduce a clean, professional deliverable."
     try:
-        response = client.models.generate_content(model="gemini-1.5-flash", contents=full_prompt)
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=full_prompt
+        )
         return response.text
-    except Exception:
-        response = client.models.generate_content(model="gemini-2.0-flash", contents=full_prompt)
-        return response.text
+    except Exception as e:
+        return f"[Agent 1 Error]: {str(e)}"
 
 # --- AGENT 2: AUDITOR ---
 def agent_2_verify(task: str, output: str) -> str:
@@ -97,11 +104,13 @@ def agent_2_verify(task: str, output: str) -> str:
         return "[Notice] Audit complete: Structure verified. Score: 95/100."
     audit_prompt = f"You are Agent 2 (Auditor).\nTask: {task}\nDraft: {output}\nAudit for mistakes, score /100, suggest fixes."
     try:
-        response = client.models.generate_content(model="gemini-1.5-flash", contents=audit_prompt)
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=audit_prompt
+        )
         return response.text
-    except Exception:
-        response = client.models.generate_content(model="gemini-2.0-flash", contents=audit_prompt)
-        return response.text
+    except Exception as e:
+        return f"[Agent 2 Error]: {str(e)}"
 
 # --- ROUTES ---
 @app.get("/", response_class=HTMLResponse)
