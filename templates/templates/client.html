@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autonomous AI Studio — Instant High-Quality Deliverables</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes pulseGlow {
+      0%, 100% { filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.4)); }
+      50% { filter: drop-shadow(0 0 25px rgba(16, 185, 129, 0.7)); }
+    }
+    .neon-card { animation: pulseGlow 4s infinite ease-in-out; }
+    .matrix-loader {
+      background: linear-gradient(90deg, #10b981 0%, #6366f1 50%, #ec4899 100%);
+      background-size: 200% 100%;
+      animation: gradientMove 2s linear infinite;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-black">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md px-6 py-4 sticky top-0 z-40">
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <span class="h-3 w-3 rounded-full bg-emerald-500 animate-ping"></span>
+        <span class="text-sm sm:text-base font-bold tracking-wider text-white">AUTONOMOUS AI STUDIO</span>
+      </div>
+      <span class="text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full">
+        ⚡ Flat ₹500 / Project
+      </span>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto p-4 sm:p-6 space-y-8 my-6">
+
+    <!-- HERO SECTION -->
+    <div class="text-center space-y-3">
+      <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
+        Deploy 3 AI Specialists on Your Project
+      </h1>
+      <p class="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto leading-relaxed">
+        Submit your task below. Watch our 3 autonomous agents analyze, draft, and audit your project with real-time live execution.
+      </p>
+    </div>
+
+    <!-- INTAKE FORM (STEP 1) -->
+    <div id="orderCard" class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
+      <div class="border-b border-slate-800 pb-4">
+        <h2 class="text-sm font-bold text-white uppercase tracking-wider">Start New Project (Flat ₹500)</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Turnaround time: Under 30 seconds.</p>
+      </div>
+
+      <form id="clientForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">Select Service</label>
+          <select id="serviceInput" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-emerald-500">
+            <option value="presentation">📊 PowerPoint Presentation Deck (Outlines, Visual Notes, Speaker Notes)</option>
+            <option value="spreadsheet">📈 Spreadsheet Data Cleaning & Complex Formulas</option>
+            <option value="social_media">📱 Viral Social Media Pack (Hooks, Captions & Hashtags)</option>
+            <option value="product_listing">🛍️ E-Commerce Product Listing (Amazon, Shopify, Etsy SEO Copy)</option>
+            <option value="custom">⚡ Custom Freelance Business Task</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">Project Instructions</label>
+          <textarea id="taskInput" rows="3" placeholder="Describe what you need in detail (e.g. '10-slide presentation deck on sustainable fashion with speaker notes' or 'Clean customer CSV and add VLOOKUP formula')" required
+            class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-emerald-500"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">Your Contact Info (WhatsApp / Email)</label>
+          <input type="text" id="contactInput" placeholder="e.g. +91 9876543210 or yourname@gmail.com" required
+            class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-emerald-500">
+        </div>
+
+        <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:opacity-90 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-900/30">
+          🚀 Launch 3 AI Agents (Instant Execution)
+        </button>
+      </form>
+    </div>
+
+    <!-- LIVE BOT ANIMATION SCREEN (STEP 2: THE MAGIC SHOW) -->
+    <div id="liveExecutionCard" class="hidden bg-black/95 border border-indigo-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 neon-card">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="h-3 w-3 rounded-full bg-indigo-500 animate-ping"></span>
+          <span class="text-xs font-mono font-bold text-indigo-300 uppercase">3 Agents Working in Parallel</span>
+        </div>
+        <span id="progressText" class="text-xs font-mono text-emerald-400 font-bold">Initializing...</span>
+      </div>
+
+      <!-- Animated Progress Bar -->
+      <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden">
+        <div id="progressBar" class="h-full matrix-loader w-1/4 transition-all duration-700"></div>
+      </div>
+
+      <!-- 3 Animated Bot Tiles -->
+      <div class="space-y-3 font-mono text-xs">
+        <div id="bot1Tile" class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between transition-all">
+          <span class="text-slate-400">🤖 Bot 1 (Architect): <span id="bot1Status" class="text-slate-300">Structuring scope...</span></span>
+          <span id="bot1Dot" class="h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
+        </div>
+        <div id="bot2Tile" class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between transition-all">
+          <span class="text-slate-400">⚡ Bot 2 (Producer): <span id="bot2Status" class="text-slate-300">Synthesizing full deliverable...</span></span>
+          <span id="bot2Dot" class="h-2 w-2 rounded-full bg-slate-700"></span>
+        </div>
+        <div id="bot3Tile" class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between transition-all">
+          <span class="text-slate-400">🔍 Bot 3 (Auditor): <span id="bot3Status" class="text-slate-300">Verifying 0 errors & accuracy...</span></span>
+          <span id="bot3Dot" class="h-2 w-2 rounded-full bg-slate-700"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELIVERABLE & PAYMENT UNLOCK (STEP 3) -->
+    <div id="deliverableCard" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+      <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-800 pb-3">
+        <div>
+          <h3 class="text-base font-bold text-white">Your Project is 100% Finished!</h3>
+          <p class="text-xs text-slate-400">Audited and certified ready for production.</p>
+        </div>
+        <span class="text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full self-start sm:self-auto">
+          Audit Score: 99/100 ✓
+        </span>
+      </div>
+
+      <!-- QA Audit Certificate Box -->
+      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+        <span class="text-[11px] font-mono text-purple-400 uppercase font-bold block mb-1">Bot 3 Quality Inspection Certificate</span>
+        <pre id="auditOutput" class="text-xs text-slate-300 whitespace-pre-wrap font-sans leading-relaxed"></pre>
+      </div>
+
+      <!-- Blurred Output with UPI QR Unlock Overlay -->
+      <div class="relative rounded-2xl overflow-hidden border border-purple-500/40 p-4 bg-slate-950">
+        <!-- The Actual Deliverable -->
+        <pre id="workOutput" class="text-xs text-slate-200 whitespace-pre-wrap font-sans max-h-60 overflow-y-auto leading-relaxed filter blur-sm select-none"></pre>
+
+        <!-- Paywall Overlay -->
+        <div id="payOverlay" class="absolute inset-0 bg-slate-950/85 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center space-y-3">
+          <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">Scan to Unlock & Download Deliverable</p>
+          <p class="text-xs text-slate-300">Flat Fee: <span class="text-emerald-400 font-bold font-mono">₹500</span> (Google Pay, PhonePe, Paytm)</p>
+          
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=upi://pay?pa={{ upi_id }}&am=500" 
+               alt="UPI QR Code" class="w-28 h-28 rounded-xl border border-purple-500 bg-white p-1.5 shadow-xl">
+          
+          <button id="unlockBtn" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white font-bold px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider transition shadow-lg">
+            I Have Paid ₹500 — Unlock My Work Now
+          </button>
+        </div>
+      </div>
+
+      <!-- Unlocked Actions -->
+      <div id="unlockedBar" class="hidden flex justify-between items-center bg-emerald-950/40 border border-emerald-500/40 p-4 rounded-xl">
+        <span class="text-xs text-emerald-400 font-semibold font-mono">✓ Deliverable 100% Unlocked</span>
+        <button id="copyBtn" class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-4 py-2 rounded-lg font-mono transition">
+          📋 Copy Full Deliverable
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const form = document.getElementById('clientForm');
+    const orderCard = document.getElementById('orderCard');
+    const liveCard = document.getElementById('liveExecutionCard');
+    const deliverableCard = document.getElementById('deliverableCard');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    let currentJobId = null;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const service = document.getElementById('serviceInput').value;
+      const task = document.getElementById('taskInput').value;
+      const contact = document.getElementById('contactInput').value;
+
+      orderCard.classList.add('hidden');
+      liveCard.classList.remove('hidden');
+
+      // Bot 1 phase
+      progressBar.style.width = '35%';
+      progressText.innerText = 'Bot 1 Architecting...';
+      document.getElementById('bot1Dot').className = 'h-2 w-2 rounded-full bg-emerald-400';
+      document.getElementById('bot2Dot').className = 'h-2 w-2 rounded-full bg-amber-400 animate-pulse';
+
+      const formData = new FormData();
+      formData.append('service', service);
+      formData.append('task_title', task);
+      formData.append('client_contact', contact);
+
+      try {
+        const res = await fetch('/api/order', { method: 'POST', body: formData });
+        const data = await res.json();
+        currentJobId = data.job_id;
+
+        // Bot 2 & 3 phase animation
+        setTimeout(() => {
+          progressBar.style.width = '75%';
+          progressText.innerText = 'Bot 2 Synthesizing...';
+          document.getElementById('bot2Dot').className = 'h-2 w-2 rounded-full bg-emerald-400';
+          document.getElementById('bot3Dot').className = 'h-2 w-2 rounded-full bg-amber-400 animate-pulse';
+        }, 800);
+
+        setTimeout(() => {
+          progressBar.style.width = '100%';
+          progressText.innerText = 'Bot 3 Audit Complete!';
+          document.getElementById('bot3Dot').className = 'h-2 w-2 rounded-full bg-emerald-400';
+        }, 1600);
+
+        setTimeout(async () => {
+          const jobRes = await fetch(`/api/job/${currentJobId}`);
+          const jobData = await jobRes.json();
+          
+          document.getElementById('workOutput').innerText = jobData.bot2_work;
+          document.getElementById('auditOutput').innerText = jobData.bot3_audit;
+
+          liveCard.classList.add('hidden');
+          deliverableCard.classList.remove('hidden');
+        }, 2200);
+
+      } catch (err) {
+        alert('Server processing error. Please try again.');
+        orderCard.classList.remove('hidden');
+        liveCard.classList.add('hidden');
+      }
+    });
+
+    // Unlock button
+    document.getElementById('unlockBtn').addEventListener('click', async () => {
+      await fetch(`/api/job/${currentJobId}/unlock`, { method: 'POST' });
+      document.getElementById('payOverlay').classList.add('hidden');
+      document.getElementById('workOutput').classList.remove('blur-sm', 'select-none');
+      document.getElementById('unlockedBar').classList.remove('hidden');
+    });
+
+    // Copy button
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      const text = document.getElementById('workOutput').innerText;
+      navigator.clipboard.writeText(text);
+      alert('Copied full deliverable to clipboard!');
+    });
+  </script>
+</body>
+</html>
