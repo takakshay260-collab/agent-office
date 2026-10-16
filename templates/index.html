@@ -3,121 +3,239 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Autonomous Agent Headquarters</title>
+  <title>Autonomous AI Agency — Global Command Center</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.4)); }
+      50% { opacity: 1; filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.8)); }
+    }
+    .glow-active { animation: pulseGlow 3s infinite ease-in-out; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-black">
   
-  <!-- Navigation Header -->
-  <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur px-6 py-4 sticky top-0 z-30">
-    <div class="max-w-6xl mx-auto flex justify-between items-center">
+  <!-- Global Navigation Header -->
+  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md px-6 py-4 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
       <div class="flex items-center space-x-3">
-        <span class="h-3 w-3 rounded-full bg-emerald-500 animate-pulse"></span>
-        <h1 class="text-lg font-bold tracking-wide">AGENT HQ (Online 24/7)</h1>
+        <span class="h-3 w-3 rounded-full bg-emerald-500 animate-ping"></span>
+        <h1 class="text-base sm:text-lg font-bold tracking-wider text-white">AUTONOMOUS AI AGENCY HQ</h1>
+        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-mono uppercase tracking-widest">
+          24/7 Cloud Active
+        </span>
       </div>
-      <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-slate-300">
-        Status: <span class="text-emerald-400 font-semibold">2 Agents Active</span>
+      <div class="flex items-center gap-3 text-xs font-mono">
+        <span class="text-slate-400">Agent 1: <span class="text-emerald-400 font-bold">Producer</span></span>
+        <span class="text-slate-600">|</span>
+        <span class="text-slate-400">Agent 2: <span class="text-sky-400 font-bold">QA Auditor</span></span>
+        <span class="text-slate-600">|</span>
+        <span class="text-slate-400">Global Payments: <span class="text-purple-400 font-bold">UPI + PayPal</span></span>
       </div>
     </div>
   </header>
 
   <main class="max-w-6xl mx-auto p-4 sm:p-6 space-y-6">
-    
-    <!-- Top Action Bar -->
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg">
-      <h2 class="text-md font-semibold text-slate-200 mb-3">Add Inbound Work / Scraped Job</h2>
-      <form action="/jobs/create" method="post" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-        <input type="text" name="title" placeholder="Job Title / Instructions" required
-          class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-emerald-500 sm:col-span-2">
-        <input type="text" name="client_name" placeholder="Client Name or Platform" required
-          class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-emerald-500">
-        <input type="text" name="budget" placeholder="Budget (e.g. ₹1500)" required
-          class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-emerald-500">
-        <button type="submit" 
-          class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 rounded-lg text-sm transition">
-          + Deploy Job to Agent Pool
+
+    <!-- LIVE TERMINAL CONSOLE -->
+    <div class="bg-black/90 border border-emerald-500/30 rounded-2xl p-4 shadow-2xl font-mono text-xs backdrop-blur-sm glow-active">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-800/80 mb-3 text-slate-400">
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+          <span class="ml-2 text-slate-300 font-semibold tracking-wide">AUTONOMOUS AGENT WORKSTREAM (REAL-TIME ENGINE)</span>
+        </div>
+        <span class="text-emerald-400 font-bold animate-pulse">● 24/7 ONLINE</span>
+      </div>
+      <div class="space-y-1.5 max-h-36 overflow-y-auto text-emerald-400/90 text-[11px] leading-relaxed">
+        {% for log in logs %}
+        <p>{{ log }}</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- VIRAL INBOUND MARKETING ENGINE -->
+    <div class="bg-gradient-to-r from-purple-950/40 via-slate-900 to-slate-900 border border-purple-500/30 rounded-2xl p-5 shadow-xl space-y-3">
+      <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+        <div>
+          <h2 class="text-sm font-bold text-purple-300 uppercase tracking-wider">Automated Client Attraction Engine</h2>
+          <p class="text-xs text-slate-300 mt-0.5">Post these AI-crafted pitches to LinkedIn, Twitter/X, or Facebook to bring paying clients directly to your portal.</p>
+        </div>
+        <form action="/marketing/generate" method="post">
+          <button type="submit" class="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-3 py-1.5 rounded-lg text-xs transition shadow-md shadow-purple-600/30 flex items-center gap-1">
+            <span>✨</span> Generate Fresh Pitch
+          </button>
+        </form>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+        {% for post in marketing_posts %}
+        <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl flex flex-col justify-between gap-3">
+          <p class="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed">{{ post }}</p>
+          <button onclick="navigator.clipboard.writeText(`{{ post }}`); alert('Copied to clipboard! Paste it on LinkedIn or X!');" 
+                  class="self-end bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1 rounded text-[11px] font-mono transition">
+            📋 Copy Post
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- CLIENT INTAKE STOREFRONT -->
+    <div class="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/30 rounded-2xl p-6 shadow-2xl space-y-4">
+      <div>
+        <h2 class="text-lg font-bold text-white tracking-wide">Direct Client Service Desk</h2>
+        <p class="text-xs text-slate-300 mt-1">Clients select a service below. Agent 1 (Producer) executes the deliverable and Agent 2 (Auditor) verifies quality.</p>
+      </div>
+
+      <form action="/client/order" method="post" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Select Service</label>
+          <select name="service_type" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-indigo-500">
+            <option value="presentation">📊 PowerPoint Presentation (₹200 - ₹30,000 / $5 - $350)</option>
+            <option value="spreadsheet">📈 Spreadsheet Cleaning & Formulas (₹500 - ₹2,000 / $10 - $25)</option>
+            <option value="social_media">📱 Social Media Content Pack (₹1,000 - ₹5,000 / $15 - $60)</option>
+            <option value="product_listing">🛍️ Product Descriptions & Listings (₹300 - ₹4,000 / $5 - $50)</option>
+            <option value="custom">⚡ Custom Freelance Automation (₹1,000+ / $15+)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Agreed Budget (INR or USD)</label>
+          <input type="text" name="budget" placeholder="e.g. ₹2,500 or $35" required
+            class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-indigo-500">
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Project Instructions & Scope</label>
+          <textarea name="task_title" rows="2" placeholder="e.g. '12-slide pitch deck for FinTech app' or 'Clean customer CSV data and build VLOOKUP formula'" required
+            class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-indigo-500"></textarea>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Client Contact (WhatsApp / Telegram / Email)</label>
+          <input type="text" name="client_contact" placeholder="client@company.com or WhatsApp number" required
+            class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-indigo-500">
+        </div>
+
+        <button type="submit" class="sm:col-span-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30">
+          🚀 Instant Order (Auto-Dispatch Agent 1 & Agent 2)
         </button>
       </form>
     </div>
 
-    <!-- Active Jobs Section -->
-    <h3 class="text-sm uppercase font-semibold text-slate-400 tracking-wider">Live Operations Dashboard</h3>
-    
-    <div class="grid grid-cols-1 gap-6">
+    <!-- LIVE DELIVERABLES & OUTREACH TARGETS -->
+    <div class="flex items-center justify-between pt-2">
+      <h3 class="text-xs uppercase font-bold text-slate-400 tracking-wider">Active Operations & Outbound Pitches</h3>
+      <span class="text-xs text-slate-500 font-mono">Real-time state synchronized</span>
+    </div>
+
+    <div class="grid grid-cols-1 gap-5">
       {% for job in jobs %}
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
         
-        <!-- Job Header -->
+        <!-- Job Meta Header -->
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-800 pb-3">
           <div>
-            <h4 class="font-bold text-base text-white">{{ job.title }}</h4>
-            <p class="text-xs text-slate-400">Client: <span class="text-slate-200">{{ job.client }}</span> | Value: <span class="text-emerald-400 font-semibold">{{ job.budget }}</span></p>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-[11px] font-mono font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 px-2.5 py-0.5 rounded-full">
+                {{ job.service_type|upper }}
+              </span>
+              <h4 class="font-bold text-sm text-white">{{ job.title }}</h4>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Client: <span class="text-slate-200 font-semibold">{{ job.client }}</span> | Payout: <span class="text-emerald-400 font-bold">{{ job.budget }}</span> | Source: <span class="text-slate-400">{{ job.source }}</span></p>
           </div>
-          <span class="text-xs px-2.5 py-1 rounded-full font-mono self-start sm:self-auto
+          <span class="text-xs px-3 py-1 rounded-full font-mono self-start sm:self-auto
             {% if job.status == 'PENDING_APPROVAL' %} bg-amber-500/10 text-amber-400 border border-amber-500/30
-            {% elif job.status == 'AUDITING' %} bg-sky-500/10 text-sky-400 border border-sky-500/30
-            {% elif job.status == 'READY_FOR_PAYMENT' %} bg-purple-500/10 text-purple-400 border border-purple-500/30
+            {% elif job.status == 'WORKING' or job.status == 'AUDITING' %} bg-sky-500/10 text-sky-400 border border-sky-500/30
+            {% elif job.status == 'READY_FOR_PAYMENT' %} bg-purple-500/10 text-purple-400 border border-purple-500/30 animate-pulse
             {% elif job.status == 'COMPLETED' %} bg-emerald-500/10 text-emerald-400 border border-emerald-500/30
             {% else %} bg-slate-700 text-slate-300 {% endif %}">
             {{ job.status }}
           </span>
         </div>
 
-        <!-- Work Output & Auditor Feedback Split View -->
+        <!-- 1-Click Auto-Pitch Box -->
+        {% if job.auto_pitch and job.status == 'PENDING_APPROVAL' %}
+        <div class="bg-indigo-950/40 border border-indigo-800/60 p-4 rounded-xl space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold text-indigo-300 uppercase tracking-wide">🎯 Auto-Generated Client Pitch</span>
+            <a href="mailto:?subject=Proposal for {{ job.title }}&body={{ job.auto_pitch|urlencode }}" 
+               class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition">
+              ✉ 1-Click Send Pitch to Client
+            </a>
+          </div>
+          <pre class="text-xs text-slate-300 whitespace-pre-wrap font-sans bg-slate-950/80 p-3 rounded-lg border border-slate-800 leading-relaxed">{{ job.auto_pitch }}</pre>
+        </div>
+        {% endif %}
+
+        <!-- Work Output Split View -->
         {% if job.agent1_output %}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Agent 1 Draft -->
-          <div class="bg-slate-950 p-4 rounded-lg border border-slate-800">
-            <span class="text-xs font-semibold text-emerald-400 block mb-2">Agent 1 Output (Worker)</span>
-            <pre class="text-xs text-slate-300 whitespace-pre-wrap font-sans max-h-48 overflow-y-auto">{{ job.agent1_output }}</pre>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <span class="text-xs font-semibold text-emerald-400 block mb-2">Agent 1 Deliverable (Producer)</span>
+            <pre class="text-xs text-slate-300 whitespace-pre-wrap font-sans max-h-56 overflow-y-auto leading-relaxed">{{ job.agent1_output }}</pre>
           </div>
-          
-          <!-- Agent 2 Audit -->
-          <div class="bg-slate-950 p-4 rounded-lg border border-slate-800">
-            <span class="text-xs font-semibold text-sky-400 block mb-2">Agent 2 Audit (Verifier)</span>
-            <pre class="text-xs text-slate-300 whitespace-pre-wrap font-sans max-h-48 overflow-y-auto">{{ job.agent2_feedback }}</pre>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <span class="text-xs font-semibold text-sky-400 block mb-2">Agent 2 Audit (QA Inspector)</span>
+            <pre class="text-xs text-slate-300 whitespace-pre-wrap font-sans max-h-56 overflow-y-auto leading-relaxed">{{ job.agent2_feedback }}</pre>
           </div>
         </div>
         {% endif %}
 
-        <!-- Interactive Control Station -->
+        <!-- Payment & Action Station -->
         <div class="flex flex-wrap items-center gap-3 pt-2">
           {% if job.status == 'PENDING_APPROVAL' %}
           <form action="/jobs/{{ job.id }}/approve" method="post">
-            <button class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg text-xs font-semibold text-white">
-              Approve & Run Agents
+            <button class="bg-blue-600 hover:bg-blue-500 px-4 py-2.5 rounded-lg text-xs font-semibold text-white transition">
+              Approve & Run Agents on Deliverable
             </button>
           </form>
           {% endif %}
 
-          {% if job.status == 'AUDITING' %}
+          {% if job.status == 'AUDITING' or (job.status == 'WORKING' and not job.paid) %}
           <form action="/jobs/{{ job.id }}/one-click-fix" method="post">
-            <button class="bg-amber-600 hover:bg-amber-500 px-4 py-2 rounded-lg text-xs font-semibold text-white flex items-center gap-1.5">
-              <span>⚡</span> 1-Click Fix Mistakes & Advance
+            <button class="bg-amber-600 hover:bg-amber-500 px-4 py-2.5 rounded-lg text-xs font-semibold text-white transition flex items-center gap-1.5">
+              <span>⚡</span> 1-Click Polish Mistakes & Advance
             </button>
           </form>
           {% endif %}
 
           {% if job.status == 'READY_FOR_PAYMENT' %}
-          <div class="flex flex-wrap items-center gap-4 bg-purple-950/40 border border-purple-800/50 p-3 rounded-lg w-full">
-            <div>
-              <p class="text-xs font-semibold text-purple-300">Payment Required Prior to Final Delivery</p>
-              <p class="text-xs text-slate-400">Scan UPI QR code on client side. Value: {{ job.budget }}</p>
+          <div class="flex flex-col sm:flex-row items-center gap-4 bg-purple-950/40 border border-purple-800/60 p-5 rounded-2xl w-full">
+            <div class="space-y-1.5 flex-1">
+              <p class="text-xs font-bold text-purple-300 uppercase tracking-wider">Payment Gate — Deliverable Ready</p>
+              <p class="text-xs text-slate-300">Indian Clients: Scan UPI QR Code below via PhonePe, GPay, or Paytm.</p>
+              <p class="text-xs text-slate-300">Global Clients: Pay securely via International Card / PayPal link.</p>
+              <p class="text-xs text-emerald-400 font-mono font-bold pt-1">Total Fee: {{ job.budget }}</p>
+              <div class="pt-1">
+                <a href="https://paypal.me/yourusername" target="_blank" class="inline-block text-[11px] bg-blue-600 hover:bg-blue-500 text-white font-semibold px-3 py-1 rounded-lg transition">
+                  🌐 Pay with International Card / PayPal
+                </a>
+              </div>
             </div>
             
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=upi://pay?pa=9928523161@ibl" 
-                 alt="UPI QR Code" class="w-16 h-16 rounded border border-purple-500 bg-white p-1 ml-auto">
+            <div class="flex flex-col items-center gap-2">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=upi://pay?pa=yourvpa@upi" 
+                   alt="UPI QR Code" class="w-24 h-24 rounded-lg border border-purple-500 bg-white p-1 shadow-md">
+              <span class="text-[10px] text-slate-400 font-mono">Scan PhonePe / GPay</span>
+            </div>
 
-            <form action="/jobs/{{ job.id }}/confirm-payment" method="post">
-              <button class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-lg text-xs">
-                Confirm Payment Received (Deliver)
+            <form action="/jobs/{{ job.id }}/confirm-payment" method="post" class="self-end sm:self-center">
+              <button class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-3 rounded-xl text-xs shadow-lg transition">
+                Confirm Payment (Release Deliverable)
               </button>
             </form>
           </div>
           {% endif %}
 
           {% if job.status == 'COMPLETED' %}
-          <div class="text-xs text-emerald-400 font-semibold flex items-center gap-1.5">
+          <div class="text-xs text-emerald-400 font-bold flex items-center gap-1.5">
             <span>✓</span> Work Delivered & Payment Verified
           </div>
           {% endif %}
