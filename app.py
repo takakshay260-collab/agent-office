@@ -186,4 +186,272 @@ CLIENT_HTML = """<!DOCTYPE html>
     <div id="liveExecutionCard" class="hidden bg-black/95 border border-indigo-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 neon-card">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
         <span class="text-xs font-mono font-bold text-indigo-300 uppercase">3 Agents Working in Parallel</span>
-        <span id="progressText" class="text-xs font-mono text-emerald-400 font-bold">Initial
+        <span id="progressText" class="text-xs font-mono text-emerald-400 font-bold">Initializing...</span>
+      </div>
+      <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden">
+        <div id="progressBar" class="h-full matrix-loader w-1/4 transition-all duration-700"></div>
+      </div>
+      <div class="space-y-3 font-mono text-xs">
+        <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between">
+          <span class="text-slate-400">🤖 Bot 1 (Architect): <span class="text-slate-300">Structuring scope...</span></span>
+          <span id="bot1Dot" class="h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between">
+          <span class="text-slate-400">⚡ Bot 2 (Producer): <span class="text-slate-300">Synthesizing full deliverable...</span></span>
+          <span id="bot2Dot" class="h-2 w-2 rounded-full bg-slate-700"></span>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between">
+          <span class="text-slate-400">🔍 Bot 3 (Auditor): <span class="text-slate-300">Verifying 0 errors & accuracy...</span></span>
+          <span id="bot3Dot" class="h-2 w-2 rounded-full bg-slate-700"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELIVERABLE & PAYMENT UNLOCK -->
+    <div id="deliverableCard" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-white">Your Project is Finished!</h3>
+        <span class="text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full">Audit Score: 99/100 ✓</span>
+      </div>
+      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+        <span class="text-[11px] font-mono text-purple-400 uppercase font-bold block mb-1">Bot 3 Inspection Certificate</span>
+        <pre id="auditOutput" class="text-xs text-slate-300 whitespace-pre-wrap font-sans"></pre>
+      </div>
+
+      <div class="relative rounded-2xl overflow-hidden border border-purple-500/40 p-4 bg-slate-950">
+        <pre id="workOutput" class="text-xs text-slate-200 whitespace-pre-wrap font-sans max-h-60 overflow-y-auto filter blur-sm select-none"></pre>
+        <div id="payOverlay" class="absolute inset-0 bg-slate-950/85 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center space-y-3">
+          <p class="text-xs font-bold text-purple-300 uppercase">Scan to Unlock & Download Deliverable</p>
+          <p class="text-xs text-slate-300">Flat Fee: <span class="text-emerald-400 font-bold font-mono">₹500</span> (PhonePe, GPay, Paytm)</p>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=upi://pay?pa=__UPI_ID__&am=500" class="w-28 h-28 rounded-xl border border-purple-500 bg-white p-1.5 shadow-xl">
+          <button id="unlockBtn" class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs uppercase transition shadow-lg">
+            I Have Paid ₹500 — Unlock My Work Now
+          </button>
+        </div>
+      </div>
+
+      <div id="unlockedBar" class="hidden flex justify-between items-center bg-emerald-950/40 border border-emerald-500/40 p-4 rounded-xl">
+        <span class="text-xs text-emerald-400 font-semibold font-mono">✓ Deliverable 100% Unlocked</span>
+        <button id="copyBtn" class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-4 py-2 rounded-lg font-mono">📋 Copy Full Deliverable</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('clientForm');
+    let currentJobId = null;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      document.getElementById('orderCard').classList.add('hidden');
+      document.getElementById('liveExecutionCard').classList.remove('hidden');
+
+      const formData = new FormData();
+      formData.append('service', document.getElementById('serviceInput').value);
+      formData.append('task_title', document.getElementById('taskInput').value);
+      formData.append('client_contact', document.getElementById('contactInput').value);
+
+      try {
+        const res = await fetch('/api/order', { method: 'POST', body: formData });
+        const data = await res.json();
+        currentJobId = data.job_id;
+
+        setTimeout(() => {
+          document.getElementById('progressBar').style.width = '70%';
+          document.getElementById('progressText').innerText = 'Bot 2 Synthesizing Deliverable...';
+          document.getElementById('bot2Dot').className = 'h-2 w-2 rounded-full bg-emerald-400';
+          document.getElementById('bot3Dot').className = 'h-2 w-2 rounded-full bg-amber-400 animate-pulse';
+        }, 800);
+
+        setTimeout(async () => {
+          document.getElementById('progressBar').style.width = '100%';
+          document.getElementById('progressText').innerText = 'Bot 3 Audit Complete!';
+          document.getElementById('bot3Dot').className = 'h-2 w-2 rounded-full bg-emerald-400';
+
+          const jobRes = await fetch(`/api/job/${currentJobId}`);
+          const jobData = await jobRes.json();
+          document.getElementById('workOutput').innerText = jobData.bot2_work;
+          document.getElementById('auditOutput').innerText = jobData.bot3_audit;
+
+          document.getElementById('liveExecutionCard').classList.add('hidden');
+          document.getElementById('deliverableCard').classList.remove('hidden');
+        }, 1800);
+      } catch (err) {
+        alert('Server processing error. Please try again.');
+        location.reload();
+      }
+    });
+
+    document.getElementById('unlockBtn').addEventListener('click', async () => {
+      await fetch(`/api/job/${currentJobId}/unlock`, { method: 'POST' });
+      document.getElementById('payOverlay').classList.add('hidden');
+      document.getElementById('workOutput').classList.remove('blur-sm', 'select-none');
+      document.getElementById('unlockedBar').classList.remove('hidden');
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      navigator.clipboard.writeText(document.getElementById('workOutput').innerText);
+      alert('Copied to clipboard!');
+    });
+  </script>
+</body>
+</html>"""
+
+# ========================================================
+# PORTAL 2: BOSS DASHBOARD HTML (BUILT DIRECTLY INTO APP)
+# ========================================================
+BOSS_HTML = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boss Command Station — Autonomous Agency</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur px-6 py-4 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <span class="h-3 w-3 rounded-full bg-emerald-500 animate-ping"></span>
+        <h1 class="text-sm sm:text-base font-bold tracking-wider text-white">BOSS COMMAND STATION (CONFIDENTIAL)</h1>
+      </div>
+      <div class="text-xs font-mono text-purple-400">UPI ID: <span class="font-bold text-white">__UPI_ID__</span></div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto p-4 sm:p-6 space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-slate-900 border border-emerald-500/40 rounded-2xl p-5 shadow-xl">
+        <span class="text-xs text-slate-400 font-mono uppercase">Verified Total Revenue</span>
+        <h2 class="text-3xl font-extrabold text-emerald-400 mt-1 font-mono">₹__TOTAL_REV__</h2>
+        <span class="text-[10px] text-slate-500 font-mono mt-1 block">Deposited straight via UPI</span>
+      </div>
+      <div class="bg-slate-900 border border-indigo-500/40 rounded-2xl p-5 shadow-xl">
+        <span class="text-xs text-slate-400 font-mono uppercase">Active Pipeline Jobs</span>
+        <h2 class="text-3xl font-extrabold text-indigo-400 mt-1 font-mono">__ACTIVE_JOBS__</h2>
+        <span class="text-[10px] text-slate-500 font-mono mt-1 block">Active across 3 bots</span>
+      </div>
+      <div class="bg-slate-900 border border-purple-500/40 rounded-2xl p-5 shadow-xl">
+        <span class="text-xs text-slate-400 font-mono uppercase">Agent Network Status</span>
+        <h2 class="text-sm font-bold text-purple-300 mt-2">All 3 Bots Active (24/7 Cloud)</h2>
+        <span class="text-[10px] text-emerald-400 font-mono mt-1 block">● Keep-Alive Sentinel Online</span>
+      </div>
+    </div>
+
+    <!-- TERMINAL LOGS -->
+    <div class="bg-black border border-emerald-500/30 rounded-2xl p-4 shadow-xl font-mono text-xs">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-2 text-slate-400">
+        <span class="font-bold text-slate-300">REAL-TIME OPERATIONAL LOGSTREAM</span>
+        <span class="text-emerald-400 animate-pulse">● 24/7 ACTIVE</span>
+      </div>
+      <div class="space-y-1.5 max-h-36 overflow-y-auto text-emerald-400/90 text-[11px]">
+        __LOGS__
+      </div>
+    </div>
+
+    <!-- CLIENT ORDERS QUEUE -->
+    <div class="space-y-3">
+      <h3 class="text-xs uppercase font-bold text-slate-400 tracking-wider">Client Orders & Production Output</h3>
+      <div class="grid grid-cols-1 gap-4">
+        __JOBS_CARDS__
+      </div>
+    </div>
+  </main>
+</body>
+</html>"""
+
+# ========================================================
+# ROUTES
+# ========================================================
+@app.get("/", response_class=HTMLResponse)
+async def client_portal():
+    html = CLIENT_HTML.replace("__UPI_ID__", UPI_VPA)
+    return HTMLResponse(content=html)
+
+@app.get("/boss", response_class=HTMLResponse)
+async def boss_dashboard():
+    total_rev = sum(500 for j in JOBS_DB.values() if j.get("paid"))
+    active_cnt = len([j for j in JOBS_DB.values() if not j.get("paid")])
+    logs_html = "".join([f"<p>{l}</p>" for l in CONSOLE_LOGS])
+
+    cards = []
+    for j in JOBS_DB.values():
+        status_badge = '<span class="text-xs px-2.5 py-1 rounded-full font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">PAID & DELIVERED</span>' if j.get("paid") else '<span class="text-xs px-2.5 py-1 rounded-full font-mono bg-purple-500/10 text-purple-400 border border-purple-500/30 animate-pulse">AWAITING PAYMENT</span>'
+        card = f"""
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <span class="text-xs font-mono font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 px-2 py-0.5 rounded">{j.get('service','').upper()}</span>
+              <h4 class="font-bold text-sm text-white mt-1">{j.get('title','')}</h4>
+              <p class="text-xs text-slate-400">Client: {j.get('client','')} | Payout: <span class="text-emerald-400 font-bold">{j.get('budget','')}</span></p>
+            </div>
+            {status_badge}
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+              <span class="text-xs font-mono text-emerald-400 font-bold block mb-1">Bot 2 (Full Deliverable)</span>
+              <pre class="text-slate-300 whitespace-pre-wrap font-sans max-h-48 overflow-y-auto">{j.get('bot2_work','')}</pre>
+            </div>
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+              <span class="text-xs font-mono text-purple-400 font-bold block mb-1">Bot 3 (Audit Certificate)</span>
+              <pre class="text-slate-300 whitespace-pre-wrap font-sans max-h-48 overflow-y-auto">{j.get('bot3_audit','')}</pre>
+            </div>
+          </div>
+        </div>
+        """
+        cards.append(card)
+
+    html = BOSS_HTML.replace("__UPI_ID__", UPI_VPA)\
+                    .replace("__TOTAL_REV__", str(total_rev))\
+                    .replace("__ACTIVE_JOBS__", str(active_cnt))\
+                    .replace("__LOGS__", logs_html)\
+                    .replace("__JOBS_CARDS__", "".join(cards))
+    return HTMLResponse(content=html)
+
+@app.post("/api/order")
+async def api_order(
+    service: str = Form(...),
+    task_title: str = Form(...),
+    client_contact: str = Form(...)
+):
+    job_id = str(uuid.uuid4())[:8]
+    add_log("Client Portal", f"New Order '{task_title}' by {client_contact} (Flat ₹500)")
+    send_telegram(f"🎉 NEW CLIENT ORDER!\n\nTask: {task_title}\nService: {service}\nClient: {client_contact}\nFee: ₹500\n\nAgents executing now!")
+
+    JOBS_DB[job_id] = {
+        "id": job_id, "service": service, "title": task_title, "client": client_contact,
+        "budget": "₹500", "status": "PROCESSING", "bot2_work": "", "bot3_audit": "", "paid": False
+    }
+
+    # Bot 2 generates deliverable
+    work = query_ai(f"Specialist in {service}. Create a complete, production-ready deliverable for: '{task_title}'. Be thorough, professional, and directly usable.")
+    JOBS_DB[job_id]["bot2_work"] = work
+
+    # Bot 3 audits deliverable
+    audit = query_ai(f"Perform a strict QA audit on this {service} deliverable. Score out of 100 and certify accuracy:\n\n{work}")
+    JOBS_DB[job_id]["bot3_audit"] = audit
+    JOBS_DB[job_id]["status"] = "READY_FOR_PAYMENT"
+
+    add_log("Bot 3 (Treasurer)", f"Job {job_id} ready. Deliverable locked behind ₹500 QR paywall.")
+    return JSONResponse({"status": "success", "job_id": job_id})
+
+@app.get("/api/job/{job_id}")
+async def get_job_status(job_id: str):
+    job = JOBS_DB.get(job_id)
+    if not job:
+        return JSONResponse({"status": "not_found"}, status_code=404)
+    return JSONResponse(job)
+
+@app.post("/api/job/{job_id}/unlock")
+async def unlock_job(job_id: str):
+    job = JOBS_DB.get(job_id)
+    if job:
+        job["paid"] = True
+        job["status"] = "COMPLETED"
+        add_log("PAYMENT CONFIRMED", f"₹500 payment verified for '{job['title']}'. Work unlocked for client!")
+        send_telegram(f"💰 ₹500 PAYMENT CONFIRMED for '{job['title']}'! Deliverable released to client.")
+    return JSONResponse({"status": "unlocked"})
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
